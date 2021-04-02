@@ -26,7 +26,8 @@ class Board
         end
       end
     end
-    # ap board
+    # binding.pry
+    ap board
     board
   end
 end
