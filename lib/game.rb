@@ -1,3 +1,6 @@
+require_relative 'user_interaction.rb'
+require_relative 'move.rb'
+
 class Game
 
 include User_Interaction

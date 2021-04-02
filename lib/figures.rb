@@ -1,35 +1,47 @@
 class Rook
-  def initialize(x, y)
+  attr_reader :symbol
+  def initialize(x, y, color)
     @curr_cords = [x, y]
+    @symbol = color == 'white' ? "♜" : "♖"
   end
 end
 
 class Knight
-  def initialize(x, y)
+  attr_reader :symbol
+  def initialize(x, y, color)
     @curr_cords = [x, y]
+    @symbol = color == 'white' ? "♞" : "♘"
   end
 end
 
 class Bishop
-  def initialize(x, y)
+  attr_reader :symbol
+  def initialize(x, y, color)
     @curr_cords = [x, y]
+    @symbol = color == 'white' ? "♝" : "♗"
   end
 end
 
 class Queen
-  def initialize(x, y)
+  attr_reader :symbol
+  def initialize(x, y, color)
     @curr_cords = [x, y]
+    @symbol = color == 'white' ? "♛" : "♕"
   end
 end
 
 class King
-  def initialize(x, y)
+  attr_reader :symbol
+  def initialize(x, y, color)
     @curr_cords = [x, y]
+    @symbol = color == 'white' ? "♚" : "♔"
   end
 end
 
 class Pawn
-  def initialize(x, y)
+  attr_reader :symbol
+  def initialize(x, y, color)
     @curr_cords = [x, y]
+    @symbol = color == 'white' ? "♙" : "♟︎"
   end
 end

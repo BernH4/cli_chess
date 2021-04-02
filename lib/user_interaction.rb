@@ -4,7 +4,7 @@ module User_Interaction
     puts "What figure do you want to move? (e.g: a3)"
     gets.chomp
   end
-  def user_ask_target(player)
+  def user_ask_target#(player)
     puts "Target?"
     gets.chomp
   end

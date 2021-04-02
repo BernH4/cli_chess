@@ -6,3 +6,4 @@ module Move
   def valid_move?
 
   end
+end
