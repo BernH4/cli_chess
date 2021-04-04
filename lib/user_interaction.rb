@@ -1,6 +1,5 @@
 module User_Interaction
-  def user_ask_figure(player)
-    puts "Its your turn #{player}!"
+  def user_ask_figure
     puts "What figure do you want to move? (e.g: a3)"
     gets.chomp
   end
@@ -8,5 +7,11 @@ module User_Interaction
     puts "Target?"
     gets.chomp
   end
+
+
+  ##Error Messages
+  #def user_error_enemy_figure
+  #  puts "
+  #end
 end
 

@@ -1,18 +1,27 @@
 class Board
+  attr_accessor :board_hash
+
   def initialize
-    @board = generate_board
+    @board_hash = generate_board
   end
 
   def print_board
     8.downto(1) do |row|
       row = row.to_s
       print " #{row} "
-      @board.keys.each do |col|
+      @board_hash.keys.each do |col|
         print_field(col, row)
       end
       puts
     end
     puts '    a  b  c  d  e  f  g  h'
+  end
+
+  # get figure by coordinates
+  def figure(coords)
+    return nil unless coords =~ /[a-h][1-8]/
+    col, row = coords.split('')
+    @board_hash[col][row]
   end
 
   private
@@ -22,7 +31,6 @@ class Board
     board = Hash.new { |hash, key| hash[key] = {} }
     fig_pos = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
     8.downto(1) do |row|
-      binding.pry
       row = row.to_s
       ('a'..'h').to_a.each do |col|
         board[col][row] =
@@ -38,12 +46,11 @@ class Board
           end
       end
     end
-    ap board
     board
   end
 
   def print_field(col, row)
-    figure = @board[col][row]&.symbol || ' '
+    figure = @board_hash[col][row]&.symbol || ' '
     if bg_white?(col, row)
       print "\e[30;103m #{figure} \e[0m"
     else
