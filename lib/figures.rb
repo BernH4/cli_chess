@@ -5,8 +5,8 @@ class Rook
   attr_reader :color, :symbol
   attr_reader :possible_movements  # debug
 
-  def initialize(x, y, color)
-    @curr_coords = x + y
+  def initialize(coords, color)
+    @curr_coords = coords 
     @color = color
     @symbol = color == 'white' ? '♜' : '♖'
   end
@@ -16,7 +16,8 @@ class Knight
   attr_reader :color, :symbol
   attr_reader :possible_movements  # debug
 
-  def initialize(_x, _y, color)
+  def initialize(coords, color)
+    @curr_coords = coords 
     @color = color
     @symbol = color == 'white' ? '♞' : '♘'
   end
@@ -25,8 +26,8 @@ end
 class Bishop
   attr_reader :color, :symbol
   attr_reader :possible_movements  # debug
-  def initialize(x, y, color)
-    @curr_coords = x + y
+  def initialize(coords, color)
+    @curr_coords = coords 
     @color = color
     @symbol = color == 'white' ? '♝' : '♗'
   end
@@ -35,8 +36,8 @@ end
 class Queen
   attr_reader :color, :symbol
   attr_reader :possible_movements  # debug
-  def initialize(x, y, color)
-    @curr_coords = x + y
+  def initialize(coords, color)
+    @curr_coords = coords 
     @color = color
     @symbol = color == 'white' ? '♛' : '♕'
   end
@@ -45,8 +46,8 @@ end
 class King
   attr_reader :color, :symbol
   attr_reader :possible_movements  # debug
-  def initialize(x, y, color)
-    @curr_coords = x + y
+  def initialize(coords, color)
+    @curr_coords = coords 
     @color = color
     @symbol = color == 'white' ? '♚' : '♔'
   end
@@ -55,8 +56,8 @@ end
 class Pawn
   attr_reader :color, :symbol, :curr_coords
   attr_reader :possible_moves  # debug
-  def initialize(x, y, color)
-    @curr_coords = x + y
+  def initialize(coords, color)
+    @curr_coords = coords 
     @color = color
     @symbol = color == 'white' ? '♙' : '♟︎'
     @possible_moves = []
