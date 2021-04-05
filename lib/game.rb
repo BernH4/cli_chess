@@ -21,26 +21,32 @@ class Game
   def play(playercolor)
     @board.print_board
     puts "Its your turn #{playercolor}!"
-    figure = get_figure(playercolor)
+    figure, figure_coords = get_figure(playercolor)
     target_coords = get_target(figure)
-    # TODO: figure.coords = target
+    @board.reposition(figure, figure_coords, target_coords)
+    # figure.curr_coords == target_coords
   end
 
   def get_target(figure)
     loop do
       target_coords = user_ask_target
       next unless valid_coords?(target_coords)
-      # next unless valid_move?(figure, target_coords)
+
+      unless figure.possible_moves.include?(target_coords)
+        puts 'You cant move there...'
+        next
+      end
+      return target_coords
     end
   end
 
-  #defined in move.rb
-  def valid_move?
-    return false if selfkill?(figure, target_coords) &&
-                    jumpover?(figure, target_coords) &&
-                    must_defend_king?(figure, target_coords) &&
-                    figure.movement_type_possible?
-  end
+  # defined in move.rb
+  # def valid_move?
+  #   return false if selfkill?(figure, target_coords) &&
+  #                   jumpover?(figure, target_coords) &&
+  #                   must_defend_king?(figure, target_coords) &&
+  #                   figure.movement_type_possible?
+  # end
 
   def get_figure(playercolor)
     loop do
@@ -50,12 +56,11 @@ class Game
 
       figure = @board.figure(figure_coords)
       next unless valid_figure?(figure, playercolor)
-      
+
       figure.update_possible_movements(@board)
-      puts "222"
-      puts figure.possible_moves
-      puts "222"
-      return figure
+      next unless can_move?(figure)
+      puts "Debug, possible moves: #{figure.possible_moves}"
+      return figure, figure_coords
     end
   end
 
@@ -76,5 +81,13 @@ class Game
       return false
     end
     true
+  end
+
+  def can_move?(figure)
+     if figure.possible_moves.empty?
+       puts 'This figure cant move anywhere!'
+       return false
+     end
+     true
   end
 end

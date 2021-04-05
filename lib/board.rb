@@ -24,6 +24,12 @@ class Board
     @board_hash[col][row]
   end
 
+  def reposition(figure, figure_coords, target_coords)
+    figure.curr_coords == target_coords
+    #TODO
+    # @board_hash.
+  end
+
   private
 
   def generate_board
