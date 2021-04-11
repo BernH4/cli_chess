@@ -57,8 +57,10 @@ class King
   end
 
   def update_possible_moves(board)
-    @curr_coords.move({ 'full_sideway' => 1, 'full_diag' => 1 }) do |field|
-      figure = board.figure(field)
+    @possible_moves = []
+
+    @curr_coords.move(x_ammount: 1, y_ammount: 1, full_side: true, full_diag: true) do |field|
+    figure = board.figure(field)
       # TODO: make this one method in module move, do not use new in every figure class
       @possible_moves << field if figure&.color != @color
     end
@@ -72,21 +74,33 @@ class Pawn
     @curr_coords = Coordinates.new(coords)
     @color = color
     @symbol = color == 'white' ? '♙' : '♟︎'
-    @possible_moves = []
   end
 
   def update_possible_moves(board)
+    @possible_moves = []
     # Check if there are enemys diagonal up, left or right and then move up 2 times
 
-    @curr_coords.move({ 'up_left' => 1, 'up_right' => 1 }) do |field|
+    # White pawns forward is up, blacks down
+    direction = @color == 'white' ? 1 : -1
+    field_right_forward = @curr_coords.move(x_ammount: 1, y_ammount: 1 * direction)
+    field_left_forward = @curr_coords.move(x_ammount: -1, y_ammount: 1 * direction)
+    puts field_left_forward
+    puts field_right_forward
+    add_if_enemy(board, field_right_forward, field_left_forward)
+
+    @curr_coords.move(y_ammount: 2 * direction) do |field|
+      # add until there is a figure in the way
+      figure = board.figure(field)
+      figure ? break : possible_moves << field
+      # @possible_moves << field unless figure
+    end
+  end
+
+  def add_if_enemy(board, *fields)
+    ap self
+    fields.each do |field|
       figure = board.figure(field)
       @possible_moves << field if figure && figure.color != @color
-    end
-
-    @curr_coords.move({ 'up' => 2 }) do |field|
-      # add if there is not already a figure on the field
-      figure = board.figure(field)
-      @possible_moves << field unless figure
     end
   end
 end

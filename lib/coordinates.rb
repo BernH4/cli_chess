@@ -10,142 +10,40 @@ class Coordinates
     @x, @y = newcoords.split('')
   end
 
-  # Knight jump over figures on his way -> no_collision = true
-  def move(directions, no_collision: false, &block)
-    # Unless other ammount specified, try to move until end of board
-    # up(directions["up"] || 99, &block)
-    up(directions['up'], &block) if directions.has_key?('up')
+  def move(x_ammount: 0, y_ammount: 0, full_side: false, full_diag: false, &block)
+    # binding.pry
+    if full_side
+      move(x_ammount: - x_ammount, y_ammount: 0, &block) # left
+      move(x_ammount: x_ammount, y_ammount: 0, &block) # right
+      move(x_ammount: 0, y_ammount: y_ammount, &block) # up
+      move(x_ammount: 0, y_ammount: - y_ammount, &block) # down
+    end
 
-    puts 'down is todo' if directions.has_key?('down')
-    up_left(directions['up_left'], &block) if directions.has_key?('up_left')
+    if full_diag
+      move(x_ammount: - x_ammount, y_ammount: y_ammount, &block) # left up
+      move(x_ammount: x_ammount, y_ammount: y_ammount, &block) # right up
+      move(x_ammount: - x_ammount, y_ammount: - y_ammount, &block) # left down
+      move(x_ammount: x_ammount, y_ammount: - y_ammount, &block) # right down
+    end
 
-    up_right(directions['up_right'], &block) if directions.has_key?('up_right')
+    return if full_side || full_diag
 
-    full_sideway(directions['full_sideway'], &block) if directions.has_key?('full_sideway')
-    full_diag(directions['full_diag'], &block) if directions.has_key?('full_diag')
-  end
-
-  def full_diag(ammount, &block)
-    up_left(ammount, &block)
-    up_right(ammount, &block)
-    down_left(ammount, &block)
-    down_right(ammount, &block)
-  end
-
-  def full_sideway(ammount, &block)
-    up(ammount, &block)
-    down(ammount, &block)
-    left(ammount, &block)
-    right(ammount, &block)
-  end
-
-  def up(ammount, &block)
     y = @y.to_i
+    y_target = y + y_ammount
+    x_ascii = @x.ord
+    x_target = x_ascii + x_ammount
 
     # If no block is given, just return the coordinates with calculated offset
-    return @x + (y + ammount).to_s unless block_given?
+    return x_target.chr + y_target.to_s unless block_given?
 
-    ammount.times do
-      y += 1
-      block.call(@x + y.to_s) # string concat, no addition
+    x_movements = x_ascii < x_target ? (x_ascii..x_target).to_a : (x_target..x_ascii).to_a.reverse
+    y_movements = y < y_target ? (y..y_target).to_a : (y_target..y).to_a.reverse
+
+    iterations = [x_movements.size, y_movements.size].max - 1
+    (1..iterations).each do |i|
+      curr_x = (x_movements[i] || x_movements.last).chr
+      curr_y = (y_movements[i] || y_movements.last).to_s
+      block.call(curr_x + curr_y) # string concat, no addition
     end
-  end
-
-  def down(ammount, &block)
-    y = @y.to_i
-
-    # If no block is given, just return the coordinates with calculated offset
-    return @x + (y + ammount).to_s unless block_given?
-
-    ammount.times do
-      y -= 1
-      block.call(@x + y.to_s) # string concat, no addition
-    end
-  end
-
-  def left(ammount, &block)
-    xord = @x.ord
-
-    # If no block is given, just return the coordinates with calculated offset
-    return (xord - ammount).chr + @y unless block_given?
-
-    ammount.times do
-      xord -= 1
-      block.call(xord.chr + @y.to_s) # string concat, no addition
-    end
-  end
-
-  def right(ammount, &block)
-    xord = @x.ord
-
-    # If no block is given, just return the coordinates with calculated offset
-    return (xord + ammount).chr + @y unless block_given?
-
-    ammount.times do
-      xord += 1
-      block.call(xord.chr + @y.to_s) # string concat, no addition
-    end
-  end
-
-  def up_left(ammount = 1, &block)
-    y = @y.to_i
-    xord = @x.ord
-
-    # If no block is given, just return the coordinates with calculated offset
-    return (xord - ammount).chr + (y + ammount).to_s unless block_given?
-
-    ammount.times do
-      xord -= 1
-      y += 1
-      block.call(xord.chr + y.to_s) # string concat, no addition
-    end
-  end
-
-  def up_right(ammount = 1, &block)
-    y = @y.to_i
-    xord = @x.ord
-
-    # If no block is given, just return the coordinates with calculated offset
-    return (xord + ammount).chr + (y + ammount).to_s unless block_given?
-
-    ammount.times do
-      xord += 1
-      y += 1
-      block.call(xord.chr + y.to_s) # string concat, no addition
-    end
-  end
-
-  def down_left(ammount = 1, &block)
-    y = @y.to_i
-    xord = @x.ord
-
-    # If no block is given, just return the coordinates with calculated offset
-    return (xord - ammount).chr + (y - ammount).to_s unless block_given?
-
-    ammount.times do
-      xord -= 1
-      y -= 1
-      block.call(xord.chr + y.to_s) # string concat, no addition
-    end
-  end
-
-  def down_right(ammount = 1, &block)
-    y = @y.to_i
-    xord = @x.ord
-
-    # If no block is given, just return the coordinates with calculated offset
-    return (xord + ammount).chr + (y - ammount).to_s unless block_given?
-
-    ammount.times do
-      xord += 1
-      y -= 1
-      block.call(xord.chr + y.to_s) # string concat, no addition
-    end
-  end
-
-  private
-
-  def final_destination(_direction, ammount)
-    (@x.ord + ammount).chr + (y + ammount).to_s
   end
 end

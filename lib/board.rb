@@ -27,7 +27,7 @@ class Board
   end
 
   def reposition(figure, figure_coords, target_coords)
-    figure.curr_coords == target_coords
+    figure.curr_coords.reassign(target_coords)
     @board_hash[target_coords] = figure
     @board_hash[figure_coords] = nil
   end
@@ -53,6 +53,8 @@ class Board
             Pawn.new(coords, 'white')
           end
         board['d4'] = King.new('d4', "white") #debug test
+        board['e4'] = King.new('e4', "black") #debug test
+        board['c4'] = King.new('c4', "black") #debug test
       end
     end
     board
