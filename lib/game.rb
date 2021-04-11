@@ -57,7 +57,7 @@ class Game
       figure = @board.figure(figure_coords)
       next unless valid_figure?(figure, playercolor)
 
-      figure.update_possible_movements(@board)
+      figure.update_possible_moves(@board)
       next unless can_move?(figure)
       puts "Debug, possible moves: #{figure.possible_moves}"
       return figure, figure_coords

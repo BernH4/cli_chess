@@ -1,85 +1,92 @@
-require_relative 'core_extensions/string/coordinates'
-String.include CoreExtensions::String::Coordinates
+require_relative 'coordinates'
+# require_relative 'core_extensions/string/coordinates'
+# String.include CoreExtensions::String::Coordinates
 
 class Rook
-  attr_reader :color, :symbol
-  attr_reader :possible_movements  # debug
+  attr_reader :color, :symbol, :curr_coords, :possible_moves  # debug
 
   def initialize(coords, color)
-    @curr_coords = coords 
+    @curr_coords = Coordinates.new(coords)
     @color = color
-    @symbol = color == 'white' ? '♜' : '♖'
+    @symbol = color == 'white' ? '♖' : '♜'
+    @possible_moves = []
   end
 end
 
 class Knight
-  attr_reader :color, :symbol
-  attr_reader :possible_movements  # debug
+  attr_reader :color, :symbol, :curr_coords, :possible_moves  # debug
 
   def initialize(coords, color)
-    @curr_coords = coords 
+    @curr_coords = Coordinates.new(coords)
     @color = color
-    @symbol = color == 'white' ? '♞' : '♘'
+    @symbol = color == 'white' ? '♘' : '♞'
+    @possible_moves = []
   end
 end
 
 class Bishop
-  attr_reader :color, :symbol
-  attr_reader :possible_movements  # debug
+  attr_reader :color, :symbol, :curr_coords, :possible_moves  # debug
+
   def initialize(coords, color)
-    @curr_coords = coords 
+    @curr_coords = Coordinates.new(coords)
     @color = color
-    @symbol = color == 'white' ? '♝' : '♗'
+    @symbol = color == 'white' ? '♗' : '♝'
+    @possible_moves = []
   end
 end
 
 class Queen
-  attr_reader :color, :symbol
-  attr_reader :possible_movements  # debug
+  attr_reader :color, :symbol, :curr_coords, :possible_moves  # debug
+
   def initialize(coords, color)
-    @curr_coords = coords 
+    @curr_coords = Coordinates.new(coords)
     @color = color
-    @symbol = color == 'white' ? '♛' : '♕'
+    @symbol = color == 'white' ? '♕' : '♛'
+    @possible_moves = []
   end
 end
 
 class King
-  attr_reader :color, :symbol
-  attr_reader :possible_movements  # debug
+  attr_reader :color, :symbol, :curr_coords, :possible_moves  # debug
+
   def initialize(coords, color)
-    @curr_coords = coords 
+    @curr_coords = Coordinates.new(coords)
     @color = color
-    @symbol = color == 'white' ? '♚' : '♔'
+    @symbol = color == 'white' ? '♔' : '♚'
+    @possible_moves = []
+  end
+
+  def update_possible_moves(board)
+    @curr_coords.move({ 'full_sideway' => 1, 'full_diag' => 1 }) do |field|
+      figure = board.figure(field)
+      # TODO: make this one method in module move, do not use new in every figure class
+      @possible_moves << field if figure&.color != @color
+    end
   end
 end
 
 class Pawn
-  attr_reader :color, :symbol, :curr_coords
-  attr_reader :possible_moves  # debug
+  attr_reader :color, :symbol, :curr_coords, :possible_moves # debug
+
   def initialize(coords, color)
-    @curr_coords = coords 
+    @curr_coords = Coordinates.new(coords)
     @color = color
     @symbol = color == 'white' ? '♙' : '♟︎'
     @possible_moves = []
   end
 
-  def update_possible_movements(board)
-    #Check if there are enemys diagonal up, left or right and then move up 2 times
-    add_enemys_on_diagonal_side(@curr_coords, board)
-    @curr_coords.upwards_with_each(2) do |field|
-      #break if there is already a figure on the field
-      # next if field == @curr_coords #skip first iteration (dont test if figure can jump on himself)
-      break if board.figure(field)
-      @possible_moves << field
-    end
-  end
+  def update_possible_moves(board)
+    # Check if there are enemys diagonal up, left or right and then move up 2 times
 
-  # If there's an enemy diagonal left or right add those coords to poss. moves
-  def add_enemys_on_diagonal_side(field, board)
-    [board.figure(field.upleft), board.figure(field.upright)].each do |figure|
-      if figure && figure.color != @color
-        @possible_moves << figure.curr_coords
-      end
+    @curr_coords.move({ 'up_left' => 1, 'up_right' => 1 }) do |field|
+      figure = board.figure(field)
+      @possible_moves << field if figure && figure.color != @color
+    end
+
+    @curr_coords.move({ 'up' => 2 }) do |field|
+      # add if there is not already a figure on the field
+      figure = board.figure(field)
+      @possible_moves << field unless figure
     end
   end
 end

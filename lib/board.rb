@@ -18,16 +18,18 @@ class Board
     puts '    a  b  c  d  e  f  g  h'
   end
 
-  # get figure by coordinates
+  # get figure by coordinates (input as string "a2" or instance of class Coordinates)
   def figure(coords)
+    coords = coords.x + coords.y if coords.instance_of?(Coordinates)
     return nil unless coords =~ /[a-h][1-8]/
+
     @board_hash[coords]
   end
 
   def reposition(figure, figure_coords, target_coords)
     figure.curr_coords == target_coords
-    #TODO
-    # @board_hash.
+    @board_hash[target_coords] = figure
+    @board_hash[figure_coords] = nil
   end
 
   private
@@ -42,14 +44,15 @@ class Board
         board[coords] =
           case row.to_i
           when 1
-            fig_pos[@columns.index(col)].new(coords, 'black')
-          when 8
             fig_pos[@columns.index(col)].new(coords, 'white')
+          when 8
+            fig_pos[@columns.index(col)].new(coords, 'black')
           when 7
             Pawn.new(coords, 'black')
           when 2
             Pawn.new(coords, 'white')
           end
+        board['d4'] = King.new('d4', "white") #debug test
       end
     end
     board
