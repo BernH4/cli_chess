@@ -3,13 +3,28 @@ require_relative 'coordinates'
 # String.include CoreExtensions::String::Coordinates
 
 class Rook
-  attr_reader :color, :symbol, :curr_coords, :possible_moves  # debug
+  attr_reader :color, :symbol, :curr_coords, :possible_moves # debug
 
   def initialize(coords, color)
     @curr_coords = Coordinates.new(coords)
     @color = color
     @symbol = color == 'white' ? '♖' : '♜'
+  end
+
+  def update_possible_moves(board)
     @possible_moves = []
+
+    # 99 => Until end of board
+    @curr_coords.move(x_ammount: 99, y_ammount: 99, full_side: true) do |field|
+      # add until there is a figure in the way
+      figure = board.figure(field)
+      if figure
+        @possible_moves << field if figure.color != @color
+        throw :breakinnerloop
+      else
+        @possible_moves << field
+      end
+    end
   end
 end
 
@@ -31,7 +46,22 @@ class Bishop
     @curr_coords = Coordinates.new(coords)
     @color = color
     @symbol = color == 'white' ? '♗' : '♝'
+  end
+
+  def update_possible_moves(board)
     @possible_moves = []
+
+    # 99 => Until end of board
+    @curr_coords.move(x_ammount: 99, y_ammount: 99, full_diag: true) do |field|
+      # add until there is a figure in the way
+      figure = board.figure(field)
+      if figure
+        @possible_moves << field if figure.color != @color
+        throw :breakinnerloop
+      else
+        @possible_moves << field
+      end
+    end
   end
 end
 
@@ -43,6 +73,23 @@ class Queen
     @color = color
     @symbol = color == 'white' ? '♕' : '♛'
     @possible_moves = []
+  end
+
+  def update_possible_moves(board)
+    @possible_moves = []
+
+    # 99 => Until end of board
+    @curr_coords.move(x_ammount: 99, y_ammount: 99, full_side: true, full_diag: true) do |field|
+      # add until there is a figure in the way
+      figure = board.figure(field)
+      if figure
+        @possible_moves << field if figure.color != @color
+        # binding.pry
+        throw :breakinnerloop
+      else
+        @possible_moves << field
+      end
+    end
   end
 end
 
@@ -60,7 +107,7 @@ class King
     @possible_moves = []
 
     @curr_coords.move(x_ammount: 1, y_ammount: 1, full_side: true, full_diag: true) do |field|
-    figure = board.figure(field)
+      figure = board.figure(field)
       # TODO: make this one method in module move, do not use new in every figure class
       @possible_moves << field if figure&.color != @color
     end
@@ -84,8 +131,6 @@ class Pawn
     direction = @color == 'white' ? 1 : -1
     field_right_forward = @curr_coords.move(x_ammount: 1, y_ammount: 1 * direction)
     field_left_forward = @curr_coords.move(x_ammount: -1, y_ammount: 1 * direction)
-    puts field_left_forward
-    puts field_right_forward
     add_if_enemy(board, field_right_forward, field_left_forward)
 
     @curr_coords.move(y_ammount: 2 * direction) do |field|
@@ -97,7 +142,6 @@ class Pawn
   end
 
   def add_if_enemy(board, *fields)
-    ap self
     fields.each do |field|
       figure = board.figure(field)
       @possible_moves << field if figure && figure.color != @color

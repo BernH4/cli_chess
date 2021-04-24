@@ -21,7 +21,8 @@ class Game
   def play(playercolor)
     @board.print_board
     puts "Its your turn #{playercolor}!"
-    figure, figure_coords = get_figure(playercolor)
+    figure, figure_coords, figure_possible_moves = get_figure(playercolor)
+    @board.print_board(figure_possible_moves)
     target_coords = get_target(figure)
     @board.reposition(figure, figure_coords, target_coords)
     # figure.curr_coords == target_coords
@@ -60,7 +61,7 @@ class Game
       figure.update_possible_moves(@board)
       next unless can_move?(figure)
       puts "Debug, possible moves: #{figure.possible_moves}"
-      return figure, figure_coords
+      return figure, figure_coords, figure.possible_moves
     end
   end
 

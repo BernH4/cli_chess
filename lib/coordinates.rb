@@ -1,7 +1,5 @@
 class Coordinates
-  # TODO: break if outside board
-  #
-  #
+  # TODO: break if outside board | done?
   def initialize(coords)
     @x, @y = coords.split('')
   end
@@ -40,10 +38,14 @@ class Coordinates
     y_movements = y < y_target ? (y..y_target).to_a : (y_target..y).to_a.reverse
 
     iterations = [x_movements.size, y_movements.size].max - 1
-    (1..iterations).each do |i|
-      curr_x = (x_movements[i] || x_movements.last).chr
-      curr_y = (y_movements[i] || y_movements.last).to_s
-      block.call(curr_x + curr_y) # string concat, no addition
+    catch :breakinnerloop do
+      (1..iterations).each do |i|
+        curr_x = (x_movements[i] || x_movements.last).chr
+        curr_y = (y_movements[i] || y_movements.last).to_s
+        break if curr_x < 'a' || curr_y.to_i < 1 || curr_x > 'h' || curr_y.to_i > 8
+
+        block.call(curr_x + curr_y) # string concat, no addition
+      end
     end
   end
 end
