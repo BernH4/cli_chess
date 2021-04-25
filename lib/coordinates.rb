@@ -8,7 +8,7 @@ class Coordinates
     @x, @y = newcoords.split('')
   end
 
-  def move(x_ammount: 0, y_ammount: 0, full_side: false, full_diag: false, &block)
+  def move(x_ammount: 0, y_ammount: 0, full_side: false, full_diag: false, knight: false, direct: false, &block)
     # binding.pry
     if full_side
       move(x_ammount: - x_ammount, y_ammount: 0, &block) # left
@@ -24,14 +24,28 @@ class Coordinates
       move(x_ammount: x_ammount, y_ammount: - y_ammount, &block) # right down
     end
 
-    return if full_side || full_diag
+    if knight
+      move(x_ammount: -1, y_ammount:  2, direct: true, &block) # up left
+      move(x_ammount:  1, y_ammount:  2, direct: true, &block) # up right
+      move(x_ammount: -1, y_ammount: -2, direct: true, &block) # down left
+      move(x_ammount:  1, y_ammount: -2, direct: true, &block) # down right
+      move(x_ammount: -2, y_ammount:  1, direct: true, &block) # left up
+      move(x_ammount: -2, y_ammount: -1, direct: true, &block) # left down
+      move(x_ammount:  2, y_ammount:  1, direct: true, &block) # right up
+      move(x_ammount:  2, y_ammount: -1, direct: true, &block) # right down
+    end
+
+    return if full_side || full_diag || knight
 
     y = @y.to_i
     y_target = y + y_ammount
     x_ascii = @x.ord
     x_target = x_ascii + x_ammount
 
-    # If no block is given, just return the coordinates with calculated offset
+    # Move directly to the specified coordinates (for example knight)
+    block.call(x_target.chr + y_target.to_s) && return if direct
+
+    # Return coordinates directly for pawn diagonal enemy search
     return x_target.chr + y_target.to_s unless block_given?
 
     x_movements = x_ascii < x_target ? (x_ascii..x_target).to_a : (x_target..x_ascii).to_a.reverse

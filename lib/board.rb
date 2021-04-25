@@ -55,30 +55,24 @@ class Board
           end
         # board['d4'] = King.new('d4', "white") #debug test
         # board['e4'] = King.new('e4', "black") #debug test
-        board['d2'] = Queen.new('d2', 'white') # debug test
+        board['d5'] = Knight.new('d5', 'white') # debug test
       end
     end
     board
   end
 
-  # red dot todo for marking possible moves \e[31m·
   def print_field(coords, marked: false)
-    empty_field_fill = marked ? "·" : " "
+    empty_field_fill = marked ? '·' : ' '
     figure = @board_hash[coords]&.symbol || empty_field_fill
+    # Figure std color is defined in the ascci character
     std_color = "\e[30;"
     red_color = "\e[31;"
     col_bg_white = '103m'
     col_bg_black = '43m'
     figure_color = marked ? red_color : std_color
     bg_color = bg_white?(coords) ? col_bg_white : col_bg_black
-    # Figure is defined in the ascci character
-    print figure_color + bg_color + " #{figure} " + "\e[0m"
 
-    # if bg_white?(coords)
-    #   print "\e[30;103m #{figure} \e[0m"
-    # else
-    #   print "\e[30;43m #{figure} \e[0m"
-    # end
+    print figure_color + bg_color + " #{figure} " + "\e[0m"
   end
 
   # If row and column are both even or both not even the color is white (or light yellow in my case)

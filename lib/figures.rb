@@ -35,7 +35,20 @@ class Knight
     @curr_coords = Coordinates.new(coords)
     @color = color
     @symbol = color == 'white' ? '♘' : '♞'
+  end
+
+  def update_possible_moves(board)
     @possible_moves = []
+
+    binding.pry
+    @curr_coords.move(knight: true) do |field|
+      figure = board.figure(field)
+      if figure
+        @possible_moves << field if figure.color != @color
+      else
+        @possible_moves << field
+      end
+    end
   end
 end
 
