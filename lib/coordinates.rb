@@ -1,5 +1,6 @@
 class Coordinates
   # TODO: break if outside board | done?
+  attr_reader :x, :y #debug
   def initialize(coords)
     @x, @y = coords.split('')
   end
@@ -43,7 +44,10 @@ class Coordinates
     x_target = x_ascii + x_ammount
 
     # Move directly to the specified coordinates (for example knight)
-    block.call(x_target.chr + y_target.to_s) && return if direct
+    if direct && !outside_board?(x_target.chr, y_target)
+      block.call(x_target.chr + y_target.to_s)
+      return
+    end
 
     # Return coordinates directly for pawn diagonal enemy search
     return x_target.chr + y_target.to_s unless block_given?
@@ -56,10 +60,14 @@ class Coordinates
       (1..iterations).each do |i|
         curr_x = (x_movements[i] || x_movements.last).chr
         curr_y = (y_movements[i] || y_movements.last).to_s
-        break if curr_x < 'a' || curr_y.to_i < 1 || curr_x > 'h' || curr_y.to_i > 8
+        break if outside_board?(curr_x, curr_y)
 
         block.call(curr_x + curr_y) # string concat, no addition
       end
     end
+  end
+
+  def outside_board?(x, y)
+    x < 'a' || y.to_i < 1 || x > 'h' || y.to_i > 8
   end
 end

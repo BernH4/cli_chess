@@ -1,9 +1,13 @@
 class Board
-  attr_accessor :board_hash
+  attr_accessor :board_hash, :white_king, :black_king
 
   def initialize
     @columns = ('a'..'h').to_a
     @board_hash = generate_board
+    @white_king = { 'coords' => 'e1', 'in_check' => false }
+    # @white_king = { 'coords' => 'd5', 'in_check' => false }
+    @black_king = { 'coords' => 'd5', 'in_check' => false }
+    # @black_king = { 'coords' => 'e8', 'in_check' => false }
   end
 
   def print_board(possible_moves = [])
@@ -27,17 +31,21 @@ class Board
     @board_hash[coords]
   end
 
-  def reposition(figure, figure_coords, target_coords)
+  def reposition(figure, target_coords)
+    figure_coords = figure.curr_coords.x + figure.curr_coords.y
+    update_king_pos(figure.color, target_coords) if figure.instance_of?(King)
     figure.curr_coords.reassign(target_coords)
     @board_hash[target_coords] = figure
     @board_hash[figure_coords] = nil
+    figure.first_move_done = true if figure.instance_of?(Pawn)
   end
 
   private
 
   def generate_board
     board = {}
-    fig_pos = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    # fig_pos = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    fig_pos = [Rook, Knight, Bishop, Queen, Pawn, Bishop, Knight, Rook] # debug
     8.downto(1) do |row|
       row = row.to_s
       ('a'..'h').to_a.each do |col|
@@ -55,7 +63,7 @@ class Board
           end
         # board['d4'] = King.new('d4', "white") #debug test
         # board['e4'] = King.new('e4', "black") #debug test
-        board['d5'] = Knight.new('d5', 'white') # debug test
+        board['d5'] = King.new('d5', 'black') # debug test
       end
     end
     board
@@ -79,5 +87,9 @@ class Board
   def bg_white?(coords)
     col, row = coords.split('')
     @columns.index(col).even? == row.to_i.even?
+  end
+
+  def update_king_pos(color, target_coords)
+    color == 'white' ? @white_king['coords'] = target_coords : @black_king['coords'] = target_coords
   end
 end
