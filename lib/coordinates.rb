@@ -9,6 +9,10 @@ class Coordinates
     @x, @y = newcoords.split('')
   end
 
+  def xy
+    @x + @y
+  end
+
   def move(x_ammount: 0, y_ammount: 0, full_side: false, full_diag: false, knight: false, direct: false, &block)
     # binding.pry
     if full_side

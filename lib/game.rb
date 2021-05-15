@@ -35,6 +35,7 @@ class Game
     end
   end
 
+  #TODO: Clean this up
   def get_target(figure)
     puts 'white king coords: ' + @board.white_king['coords']
     puts 'black king coords: ' + @board.black_king['coords']
@@ -46,10 +47,15 @@ class Game
         puts 'You cant move there...'
         next
       end
+
       if own_king_in_check?(figure) && !check_cleared?(figure, target_coords)
         puts 'Those coordinates do not save your king, which is in check.'
         return
+      elsif !check_cleared?(figure, target_coords)
+        puts 'test: thos would move your king being in check.'
+        return
       end
+
       return target_coords
     end
   end
@@ -127,25 +133,31 @@ class Game
   # if not set the coords back to the state before
   def check_cleared?(figure, target_coords)
     # binding.pry
-    figure_coords_before = figure.curr_coords.x + figure.curr_coords.y
+    figure_coords_before = figure.curr_coords.xy
+    figure_at_target = @board.figure(target_coords)
 
-    pp 'before' + @board.black_king.to_s
     @board.reposition(figure, target_coords)
     update_all_poss_moves
-    pp 'after' + @board.black_king.to_s
     # binding.pry
     if own_king_in_check?(figure)
-      puts 'Still in check'
-      pp 'before revert' + @board.black_king.to_s
-      @board.reposition(figure, figure_coords_before)
-      pp 'after revert' + @board.black_king.to_s
-      # update_all_poss_moves
-      false
+      puts 'In check'
+      revert(figure, figure_coords_before, figure_at_target)
     else
-      puts 'not in check anymore'
+      puts 'now not in check'
       @board.reposition(figure, figure_coords_before)
       # update_all_poss_moves
       true
     end
+  end
+
+  #Moves the players figure and the killed figure at target back to the original position
+  def revert(figure, figure_coords_before, figure_at_target)
+    @board.reposition(figure, figure_coords_before)
+    if figure_at_target
+      target_coords = figure_at_target.curr_coords.xy
+      @board.board_hash[target_coords] = figure_at_target
+    end
+    update_all_poss_moves
+    false
   end
 end
