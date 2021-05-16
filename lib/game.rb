@@ -21,12 +21,13 @@ class Game
 
   private
 
-  def play(playercolor)
+  def play(player_color)
     target_coords = nil
-    puts "Its your turn #{playercolor}!"
+    puts "Its your turn #{player_color}!"
     until target_coords
       @board.print_board
-      figure, figure_coords, figure_possible_moves = get_figure(playercolor)
+      check_if_save_possible(player_color) if own_king_in_check?(player_color)
+      figure, figure_coords, figure_possible_moves = get_figure(player_color)
       @board.print_board(figure_possible_moves)
       target_coords = get_target(figure)
       redo if target_coords.nil?
@@ -35,7 +36,7 @@ class Game
     end
   end
 
-  #TODO: Clean this up
+  # TODO: Clean this up
   def get_target(figure)
     puts 'white king coords: ' + @board.white_king['coords']
     puts 'black king coords: ' + @board.black_king['coords']
@@ -48,11 +49,11 @@ class Game
         next
       end
 
-      if own_king_in_check?(figure) && !check_cleared?(figure, target_coords)
+      if own_king_in_check?(figure.color) && !check_cleared?(figure, target_coords)
         puts 'Those coordinates do not save your king, which is in check.'
         return
       elsif !check_cleared?(figure, target_coords)
-        puts 'test: thos would move your king being in check.'
+        puts 'Move not allowed, your king would be in check!'
         return
       end
 
@@ -60,8 +61,8 @@ class Game
     end
   end
 
-  def own_king_in_check?(figure)
-    figure.color == 'white' ? @board.white_king['in_check'] : @board.black_king['in_check']
+  def own_king_in_check?(player_color)
+    player_color == 'white' ? @board.white_king['in_check'] : @board.black_king['in_check']
   end
 
   # defined in move.rb
@@ -72,14 +73,14 @@ class Game
   #                   figure.movement_type_possible?
   # end
 
-  def get_figure(playercolor)
+  def get_figure(player_color)
     loop do
       figure_coords = user_ask_figure
       puts # newline
       next unless valid_coords?(figure_coords)
 
       figure = @board.figure(figure_coords)
-      next unless valid_figure?(figure, playercolor)
+      next unless valid_figure?(figure, player_color)
 
       # figure.update_possible_moves(@board)
       next unless can_move?(figure)
@@ -97,11 +98,11 @@ class Game
     puts "Invalid coordinates! Format example: 'a1'"
   end
 
-  def valid_figure?(figure, playercolor)
+  def valid_figure?(figure, player_color)
     if figure.nil?
       puts 'No figure on this field.'
       return false
-    elsif figure.color != playercolor
+    elsif figure.color != player_color
       puts 'Thats not your figure!'
       return false
     end
@@ -139,18 +140,18 @@ class Game
     @board.reposition(figure, target_coords)
     update_all_poss_moves
     # binding.pry
-    if own_king_in_check?(figure)
-      puts 'In check'
+    if own_king_in_check?(figure.color)
+      # puts 'In check'
       revert(figure, figure_coords_before, figure_at_target)
     else
-      puts 'now not in check'
-      @board.reposition(figure, figure_coords_before)
+      # puts 'now not in check'
+      # @board.reposition(figure, figure_coords_before)
       # update_all_poss_moves
       true
     end
   end
 
-  #Moves the players figure and the killed figure at target back to the original position
+  # Moves the players figure and the killed figure at target back to the original position
   def revert(figure, figure_coords_before, figure_at_target)
     @board.reposition(figure, figure_coords_before)
     if figure_at_target
@@ -160,4 +161,24 @@ class Game
     update_all_poss_moves
     false
   end
+
+  def check_if_save_possible(player_color)
+    # figure.update_possible_moves(@board) #not needed
+    @board.board_hash.each_value do |figure|
+      next if figure.nil? || figure.color != player_color
+
+      
+      # binding.pry unless figure.possible_moves == []
+      figure.possible_moves.each do |poss_move|
+        # return true if check_cleared?(figure, poss_move)
+        if check_cleared?(figure, poss_move)
+          puts "Poss move could be: #{figure}(#{figure.curr_coords.xy}):#{poss_move}"
+          return true 
+        end
+      end
+    end
+    puts "Game finished. There is now way #{player_color} can save his king."
+    exit
+  end
+
 end

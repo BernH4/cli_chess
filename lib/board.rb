@@ -64,6 +64,8 @@ class Board
         # board['d4'] = King.new('d4', "white") #debug test
         # board['e4'] = King.new('e4', "black") #debug test
         board['d5'] = King.new('d5', 'black') # debug test
+        board['a3'] = Queen.new('a3', 'white') # debug test
+        board['h3'] = Queen.new('h3', 'white') # debug test
       end
     end
     board
