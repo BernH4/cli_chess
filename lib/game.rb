@@ -131,7 +131,7 @@ class Game
 
   # Saves current position of choosen figure, repositions it to the new target coords
   # and checks if that would remove the king from being in check.
-  # if not set the coords back to the state before
+  # Will move the figure back to original positions after the check
   def check_cleared?(figure, target_coords)
     # binding.pry
     figure_coords_before = figure.curr_coords.xy
@@ -143,10 +143,9 @@ class Game
     if own_king_in_check?(figure.color)
       # puts 'In check'
       revert(figure, figure_coords_before, figure_at_target)
+      false
     else
-      # puts 'now not in check'
-      # @board.reposition(figure, figure_coords_before)
-      # update_all_poss_moves
+      revert(figure, figure_coords_before, figure_at_target)
       true
     end
   end
@@ -162,23 +161,22 @@ class Game
     false
   end
 
+  # checks if any possible move from the player can save the king
   def check_if_save_possible(player_color)
     # figure.update_possible_moves(@board) #not needed
     @board.board_hash.each_value do |figure|
       next if figure.nil? || figure.color != player_color
 
-      
       # binding.pry unless figure.possible_moves == []
       figure.possible_moves.each do |poss_move|
         # return true if check_cleared?(figure, poss_move)
         if check_cleared?(figure, poss_move)
           puts "Poss move could be: #{figure}(#{figure.curr_coords.xy}):#{poss_move}"
-          return true 
+          return true
         end
       end
     end
     puts "Game finished. There is now way #{player_color} can save his king."
     exit
   end
-
 end
