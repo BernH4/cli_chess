@@ -1,9 +1,7 @@
 require_relative 'user_interaction'
-require_relative 'move'
 
 class Game
   include User_Interaction
-  include Move
 
   def initialize(board)
     @board = board

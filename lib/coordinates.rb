@@ -13,7 +13,7 @@ class Coordinates
     @x + @y
   end
 
-  def move(x_ammount: 0, y_ammount: 0, full_side: false, full_diag: false, knight: false, direct: false, &block)
+  def move(x_ammount: 0, y_ammount: 0, full_side: false, full_diag: false, knight: false, pawn: false, direct: false, &block)
     # binding.pry
     if full_side
       move(x_ammount: - x_ammount, y_ammount: 0, &block) # left
@@ -40,7 +40,12 @@ class Coordinates
       move(x_ammount:  2, y_ammount: -1, direct: true, &block) # right down
     end
 
-    return if full_side || full_diag || knight
+    if pawn
+      move(x_ammount:  -1, y_ammount: y_ammount, direct: true, &block) # left 
+      move(x_ammount:  1, y_ammount: y_ammount, direct: true, &block)  # right 
+    end
+
+    return if full_side || full_diag || knight || pawn
 
     y = @y.to_i
     y_target = y + y_ammount
@@ -52,9 +57,6 @@ class Coordinates
       block.call(x_target.chr + y_target.to_s)
       return
     end
-
-    # Return coordinates directly for pawn diagonal enemy search
-    return x_target.chr + y_target.to_s unless block_given?
 
     x_movements = x_ascii < x_target ? (x_ascii..x_target).to_a : (x_target..x_ascii).to_a.reverse
     y_movements = y < y_target ? (y..y_target).to_a : (y_target..y).to_a.reverse
