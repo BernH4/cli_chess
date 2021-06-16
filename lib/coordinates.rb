@@ -1,6 +1,7 @@
 class Coordinates
   # TODO: break if outside board | done?
-  attr_reader :x, :y #debug
+  attr_reader :x, :y # debug
+
   def initialize(coords)
     @x, @y = coords.split('')
   end
@@ -41,8 +42,8 @@ class Coordinates
     end
 
     if pawn
-      move(x_ammount:  -1, y_ammount: y_ammount, direct: true, &block) # left 
-      move(x_ammount:  1, y_ammount: y_ammount, direct: true, &block)  # right 
+      move(x_ammount:  -1, y_ammount: y_ammount, direct: true, &block) # left
+      move(x_ammount:  1, y_ammount: y_ammount, direct: true, &block)  # right
     end
 
     return if full_side || full_diag || knight || pawn
@@ -58,8 +59,8 @@ class Coordinates
       return
     end
 
-    x_movements = x_ascii < x_target ? (x_ascii..x_target).to_a : (x_target..x_ascii).to_a.reverse
-    y_movements = y < y_target ? (y..y_target).to_a : (y_target..y).to_a.reverse
+    x_movements = get_movements(x_ascii, x_target)
+    y_movements = get_movements(y, y_target)
 
     iterations = [x_movements.size, y_movements.size].max - 1
     catch :breakinnerloop do
@@ -73,7 +74,18 @@ class Coordinates
     end
   end
 
+  private
+
   def outside_board?(x, y)
-    x < 'a' || y.to_i < 1 || x > 'h' || y.to_i > 8
+    x < 'a' || x > 'h' || y.to_i < 1 || y.to_i > 8
+  end
+
+  def get_movements(start_coords, target_coords)
+    # descending ranges are not possible, workarround:
+    if start_coords < target_coords
+      (start_coords..target_coords).to_a
+    else
+      (target_coords..start_coords).to_a.reverse
+    end
   end
 end
