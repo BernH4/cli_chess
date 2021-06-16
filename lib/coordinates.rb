@@ -42,27 +42,26 @@ class Coordinates
     end
 
     if pawn
-      move(x_ammount:  -1, y_ammount: y_ammount, direct: true, &block) # left
-      move(x_ammount:  1, y_ammount: y_ammount, direct: true, &block)  # right
+      move(x_ammount:  -1, y_ammount: y_ammount, direct: true, &block) # left forwards
+      move(x_ammount:  1, y_ammount: y_ammount, direct: true, &block)  # right forwards
     end
 
     return if full_side || full_diag || knight || pawn
 
-    y = @y.to_i
-    y_target = y + y_ammount
-    x_ascii = @x.ord
-    x_target = x_ascii + x_ammount
+    y_int = @y.to_i
+    x_int = @x.ord
+    y_target = y_int + y_ammount
+    x_target = x_int + x_ammount
 
     # Move directly to the specified coordinates (for example knight)
     if direct && !outside_board?(x_target.chr, y_target)
       block.call(x_target.chr + y_target.to_s)
       return
     end
-
-    x_movements = get_movements(x_ascii, x_target)
-    y_movements = get_movements(y, y_target)
-
+    x_movements = get_movements(x_int, x_target)
+    y_movements = get_movements(y_int , y_target)
     iterations = [x_movements.size, y_movements.size].max - 1
+
     catch :breakinnerloop do
       (1..iterations).each do |i|
         curr_x = (x_movements[i] || x_movements.last).chr
@@ -74,7 +73,7 @@ class Coordinates
     end
   end
 
-  private
+  # private
 
   def outside_board?(x, y)
     x < 'a' || x > 'h' || y.to_i < 1 || y.to_i > 8
