@@ -83,7 +83,7 @@ class Game
       # figure.update_possible_moves(@board)
       next unless can_move?(figure)
 
-      puts "Debug, possible moves: #{figure.possible_moves}"
+      # puts "Debug, possible moves: #{figure.possible_moves}"
       return figure, figure_coords, figure.possible_moves
     end
   end

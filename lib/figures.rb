@@ -116,7 +116,6 @@ class Pawn
 
     # White pawns forward is up, blacks down
     direction = @color == 'white' ? 1 : -1
-
     @curr_coords.move(y_ammount: direction, pawn: true) do |field|
       #fields will be left and right at forward direction
       add_if_poss_move(board, field, must_kill: true, use_throw: false)
@@ -124,7 +123,7 @@ class Pawn
 
     y_ammount = @first_move_done ? 1 : 2
     @curr_coords.move(y_ammount: y_ammount * direction) do |field|
-      # add_if_poss_move(board, field, must_be_empty: true)
+      add_if_poss_move(board, field, must_be_empty: true)
     end
     # puts symbol + " " + @curr_coords.xy
     # ap @possible_moves
