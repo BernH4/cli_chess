@@ -1,6 +1,5 @@
 class Coordinates
-  # TODO: break if outside board | done?
-  attr_reader :x, :y # debug
+  attr_reader :x, :y
 
   def initialize(coords)
     @x, @y = coords.split('')
@@ -15,7 +14,6 @@ class Coordinates
   end
 
   def move(x_ammount: 0, y_ammount: 0, full_side: false, full_diag: false, knight: false, pawn: false, direct: false, &block)
-    # binding.pry
     if full_side
       move(x_ammount: - x_ammount, y_ammount: 0, &block) # left
       move(x_ammount: x_ammount, y_ammount: 0, &block) # right
@@ -54,8 +52,10 @@ class Coordinates
     x_target = x_int + x_ammount
 
     # Move directly to the specified coordinates (for example knight)
-    if direct && !outside_board?(x_target.chr, y_target)
-      block.call(x_target.chr + y_target.to_s)
+    if direct
+      if !outside_board?(x_target.chr, y_target)
+        block.call(x_target.chr + y_target.to_s)
+      end
       return
     end
     x_movements = get_movements(x_int, x_target)

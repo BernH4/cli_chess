@@ -7,11 +7,5 @@ module User_Interaction
     puts "Target?"
     gets.chomp
   end
-
-
-  ##Error Messages
-  #def user_error_enemy_figure
-  #  puts "
-  #end
 end
 

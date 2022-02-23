@@ -3,7 +3,8 @@ require_relative 'figure_extension'
 
 class Rook
   include FigureExtension
-  attr_reader :color, :symbol, :curr_coords, :possible_moves # debug
+  attr_reader :color, :symbol, :curr_coords
+  attr_accessor :possible_moves
 
   def initialize(coords, color)
     @curr_coords = Coordinates.new(coords)
@@ -23,7 +24,8 @@ end
 
 class Knight
   include FigureExtension
-  attr_reader :color, :symbol, :curr_coords, :possible_moves # debug
+  attr_reader :color, :symbol, :curr_coords
+  attr_accessor :possible_moves
 
   def initialize(coords, color)
     @curr_coords = Coordinates.new(coords)
@@ -33,7 +35,10 @@ class Knight
   end
 
   def update_possible_moves(board)
+      # binding.pry
+    puts "Figure: " + @curr_coords.xy
     @curr_coords.move(knight: true) do |field|
+      # binding.pry if field == "c6"
       add_if_poss_move(board, field, use_throw: false)
     end
   end
@@ -41,7 +46,8 @@ end
 
 class Bishop
   include FigureExtension
-  attr_reader :color, :symbol, :curr_coords, :possible_moves # debug
+  attr_reader :color, :symbol, :curr_coords
+  attr_accessor :possible_moves
 
   def initialize(coords, color)
     @curr_coords = Coordinates.new(coords)
@@ -62,7 +68,8 @@ end
 
 class Queen
   include FigureExtension
-  attr_reader :color, :symbol, :curr_coords, :possible_moves # debug
+  attr_reader :color, :symbol, :curr_coords
+  attr_accessor :possible_moves
 
   def initialize(coords, color)
     @curr_coords = Coordinates.new(coords)
@@ -82,7 +89,8 @@ end
 
 class King
   include FigureExtension
-  attr_reader :color, :symbol, :curr_coords, :possible_moves # debug
+  attr_reader :color, :symbol, :curr_coords
+  attr_accessor :possible_moves
 
   def initialize(coords, color)
     @curr_coords = Coordinates.new(coords)
@@ -100,8 +108,8 @@ end
 
 class Pawn
   include FigureExtension
-  attr_reader :color, :symbol, :curr_coords, :possible_moves # debug
-  attr_accessor :first_move_done
+  attr_reader :color, :symbol, :curr_coords
+  attr_accessor :possible_moves
 
   def initialize(coords, color)
     @curr_coords = Coordinates.new(coords)

@@ -123,6 +123,7 @@ class Game
     @board.board_hash.each_value do |figure|
       next if figure.nil?
 
+      figure.possible_moves = []
       figure.update_possible_moves(@board)
     end
   end

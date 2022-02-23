@@ -44,8 +44,8 @@ class Board
 
   def generate_board
     board = {}
-    # fig_pos = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
-    fig_pos = [Rook, Knight, Bishop, Queen, Pawn, Bishop, Knight, Rook] # debug
+    fig_pos = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    # fig_pos = [Rook, Knight, Bishop, Queen, Pawn, Bishop, Knight, Rook] # debug
     8.downto(1) do |row|
       row = row.to_s
       ('a'..'h').to_a.each do |col|
@@ -61,7 +61,7 @@ class Board
           when 2
             Pawn.new(coords, 'white')
           end
-        # board['d4'] = King.new('d4', "white") #debug test
+        # board['b5'] = Knight.new('b5', "white") #debug test
         # board['e4'] = King.new('e4', "black") #debug test
         # board['d5'] = King.new('d5', 'black') # debug test
         # board['a3'] = Queen.new('a3', 'white') # debug test
@@ -85,7 +85,7 @@ class Board
     print figure_color + bg_color + " #{figure} " + "\e[0m"
   end
 
-  # If row and column are both even or both not even the color is white (or light yellow in my case)
+  # If row and column are both even or both not even the background color is white (or light yellow in my case)
   def bg_white?(coords)
     col, row = coords.split('')
     @columns.index(col).even? == row.to_i.even?

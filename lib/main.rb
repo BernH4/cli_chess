@@ -8,5 +8,4 @@ require 'ap'
 
 board = Board.new
 game = Game.new(board)
-# board.print_board
 game.start
