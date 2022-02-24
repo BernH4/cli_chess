@@ -36,8 +36,8 @@ class Game
 
   # TODO: Clean this up
   def get_target(figure)
-    puts 'white king coords: ' + @board.white_king['coords']
-    puts 'black king coords: ' + @board.black_king['coords']
+    # puts 'white king coords: ' + @board.white_king['coords']
+    # puts 'black king coords: ' + @board.black_king['coords']
     loop do
       target_coords = user_ask_target
       next unless valid_coords?(target_coords)

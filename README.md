@@ -10,3 +10,5 @@ Possible Improvements:
 Written because its part of the ruby curriciculum in "The Odin Project".
 I didnt know anything about chess before, Odin made me learn the rules and im pretty glad they did!
 
+Screenshot:
+![](chess.jpg)

@@ -36,7 +36,7 @@ class Knight
 
   def update_possible_moves(board)
       # binding.pry
-    puts "Figure: " + @curr_coords.xy
+    # puts "Figure: " + @curr_coords.xy
     @curr_coords.move(knight: true) do |field|
       # binding.pry if field == "c6"
       add_if_poss_move(board, field, use_throw: false)
@@ -109,7 +109,7 @@ end
 class Pawn
   include FigureExtension
   attr_reader :color, :symbol, :curr_coords
-  attr_accessor :possible_moves
+  attr_accessor :possible_moves, :first_move_done
 
   def initialize(coords, color)
     @curr_coords = Coordinates.new(coords)
